@@ -1,6 +1,6 @@
-# modern_art
+# modern-art
 
-A Quil sketch designed to ... well, that part is up to you.
+A Quil sketch designed to create modern art with the help of an Arduino.
 
 ## Usage
 
@@ -8,7 +8,7 @@ LightTable - open `core.clj` and press `Ctrl+Shift+Enter` to evaluate the file.
 
 Emacs - run cider, open `core.clj` and press `C-c C-k` to evaluate the file.
 
-REPL - run `(require 'modern_art.core)`.
+REPL - run `(require 'modern-art.core)`.
 
 ## License
 
