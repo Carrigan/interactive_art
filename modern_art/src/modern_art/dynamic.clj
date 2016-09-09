@@ -1,32 +1,39 @@
 (ns modern-art.dynamic
   (:require [quil.core :as q]))
 
-(defn setup []
-  ; Set frame rate to 30 frames per second.
-  (q/frame-rate 30)
-  ; Set color mode to HSB (HSV) instead of default RGB.
-  (q/color-mode :hsb)
-  ; setup function returns initial state. It contains
-  ; circle color and position.
-  {:color 0
-   :angle 0})
+(def size 50)
 
-(defn update-state [state]
-  ; Update sketch state by changing circle color and position.
-  {:color (mod (+ (:color state) 0.7) 255)
-   :angle (+ (:angle state) 0.1)})
+(defn setup []
+  (q/frame-rate 30)
+  (q/color-mode :hsb)
+  {})
+
+(defn update-state [state] {})
+
+(defn rotate-hue [hue]
+  (let [new-hue (+ 50 hue)
+        new-hue (if (> new-hue 255) (- new-hue 255) new-hue)]
+    new-hue))
+
+(defn dim [lightness]
+  (max (- lightness 20) 0))
+
+(defn render-frame [color]
+  (q/fill 0)
+  (q/stroke-weight 3)
+  (q/line 0 size 500 size)
+  (q/line 0 (* size 2) 500 (* size 2))
+  (q/line size 0 size 500)
+  (q/line (* size 2) 0 (* size 2) 500)
+  (apply q/fill color)
+  (q/rect size size size size)
+
+  (let [[h s l]   color
+        new-color [(rotate-hue h) s (dim l)]
+        start     (* size 2)]
+    (apply q/fill new-color)
+    (q/rect start size (- 500 start) size)))
 
 (defn draw-state [state]
-  ; Clear the sketch by filling it with light-grey color.
   (q/background 240)
-  ; Set circle color.
-  (q/fill (:color state) 255 255)
-  ; Calculate x and y coordinates of the circle.
-  (let [angle (:angle state)
-        x (* 150 (q/cos angle))
-        y (* 150 (q/sin angle))]
-    ; Move origin point to the center of the sketch.
-    (q/with-translation [(/ (q/width) 2)
-                         (/ (q/height) 2)]
-      ; Draw the circle.
-      (q/ellipse x y 100 100))))
+  (render-frame [90 200 200]))
