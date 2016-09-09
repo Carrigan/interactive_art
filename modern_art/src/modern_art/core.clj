@@ -5,7 +5,7 @@
 
 (q/defsketch modern-art
   :title "You spin my circle right round"
-  :size [500 500]
+  :size [800 800]
   :setup dynamic/setup
   :update dynamic/update-state
   :draw dynamic/draw-state

@@ -1,39 +1,30 @@
 (ns modern-art.dynamic
-  (:require [quil.core :as q]))
-
-(def size 50)
+  (:require [quil.core :as q]
+            [modern-art.lines-and-boxes :as frame]))
 
 (defn setup []
-  (q/frame-rate 30)
+  (q/frame-rate 1)
   (q/color-mode :hsb)
-  {})
+  {:frames '([90 200 255]
+             [100 100 100]
+             [200 30 230]
+             [0 255 100]
+             [140 50 150]
+             [200 90 90])})
 
-(defn update-state [state] {})
+(defn update-state [state] state)
 
-(defn rotate-hue [hue]
-  (let [new-hue (+ 50 hue)
-        new-hue (if (> new-hue 255) (- new-hue 255) new-hue)]
-    new-hue))
-
-(defn dim [lightness]
-  (max (- lightness 20) 0))
-
-(defn render-frame [color]
-  (q/fill 0)
-  (q/stroke-weight 3)
-  (q/line 0 size 500 size)
-  (q/line 0 (* size 2) 500 (* size 2))
-  (q/line size 0 size 500)
-  (q/line (* size 2) 0 (* size 2) 500)
-  (apply q/fill color)
-  (q/rect size size size size)
-
-  (let [[h s l]   color
-        new-color [(rotate-hue h) s (dim l)]
-        start     (* size 2)]
-    (apply q/fill new-color)
-    (q/rect start size (- 500 start) size)))
+(defn recurse-frame [colors [cx cy] [x y]]
+  (when-not (empty? colors)
+    (let [size-x (- (q/width) cx)
+          size-y (- (q/height) cy)]
+        (q/push-matrix)
+        (q/translate cx cy)
+        (q/scale (/ size-x x) (/ size-y y))
+        (let [next-location (-> colors (first) (frame/render))]
+          (recurse-frame (rest colors) next-location [x y])
+          (q/pop-matrix)))))
 
 (defn draw-state [state]
   (q/background 240)
-  (render-frame [90 200 200]))
+  (recurse-frame (:frames state) [0 0] [(q/width) (q/height)]))
