@@ -12,7 +12,17 @@
 (defn slider-val [state key]
   (int (* 255 (mock/get-value (:mock state) key))))
 
-(defn update-state [state] state)
+(defn recurse-if-clicked [state clicked?]
+  (if clicked?
+    (let [cframe [(slider-val state :hue-slider) (slider-val state :sat-slider) (slider-val state :bri-slider)]
+          frames (concat (:frames state) [cframe])]
+      (assoc state :frames frames))
+    state))
+
+(defn update-state [state]
+  (-> state
+    (recurse-if-clicked (mock/clicked? (:mock state) :next-btn))
+    (assoc :mock (mock/clear-clicks (:mock state)))))
 
 (defn mouse-pressed [state event]
   (assoc state :mock (mock/check-click (:mock state) event)))
