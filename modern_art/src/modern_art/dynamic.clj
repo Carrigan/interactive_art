@@ -1,18 +1,21 @@
 (ns modern-art.dynamic
   (:require [quil.core :as q]
-            [modern-art.lines-and-boxes :as frame]))
+            [modern-art.lines-and-boxes :as frame]
+            [modern-art.mock :as mock]))
 
 (defn setup []
-  (q/frame-rate 1)
+  (q/frame-rate 30)
   (q/color-mode :hsb)
-  {:frames '([90 200 255]
-             [100 100 100]
-             [200 30 230]
-             [0 255 100]
-             [140 50 150]
-             [200 90 90])})
+  {:mock (mock/init)
+   :frames '()})
+
+(defn slider-val [state key]
+  (int (* 255 (mock/get-value (:mock state) key))))
 
 (defn update-state [state] state)
+
+(defn mouse-pressed [state event]
+  (assoc state :mock (mock/check-click (:mock state) event)))
 
 (defn recurse-frame [colors [cx cy] [x y]]
   (when-not (empty? colors)
@@ -26,5 +29,8 @@
           (q/pop-matrix)))))
 
 (defn draw-state [state]
-  (q/background 240)
-  (recurse-frame (:frames state) [0 0] [(q/width) (q/height)]))
+  (let [cframe [(slider-val state :hue-slider) (slider-val state :sat-slider) (slider-val state :bri-slider)]
+        frames (concat (:frames state) [cframe])]
+    (q/background 240)
+    (recurse-frame frames [0 0] [(q/width) (q/height)])
+    (mock/render (:mock state))))

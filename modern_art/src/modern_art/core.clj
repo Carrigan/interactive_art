@@ -9,5 +9,6 @@
   :setup dynamic/setup
   :update dynamic/update-state
   :draw dynamic/draw-state
+  :mouse-pressed dynamic/mouse-pressed
   :features [:keep-on-top]
   :middleware [m/fun-mode])
