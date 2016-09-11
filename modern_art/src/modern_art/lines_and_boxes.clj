@@ -39,4 +39,4 @@
       (q/rect size start size (- (q/height) start))
       (q/rect size 0 size size))
 
-    [(* size 2) (* size 2)]))
+    [(* size 2) (* size 2) (q/width) (q/height)]))

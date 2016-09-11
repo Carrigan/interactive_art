@@ -36,10 +36,10 @@
 (defn mouse-pressed [state event]
   (assoc state :mock (mock/check-click (:mock state) event)))
 
-(defn recurse-frame [colors [cx cy] [x y]]
+(defn recurse-frame [colors [cx cy mx my] [x y]]
   (when-not (empty? colors)
-    (let [size-x (- (q/width) cx)
-          size-y (- (q/height) cy)]
+    (let [size-x (- mx cx)
+          size-y (- my cy)]
         (q/push-matrix)
         (q/translate cx cy)
         (q/scale (/ size-x x) (/ size-y y))
@@ -51,5 +51,5 @@
   (let [cframe (frame-from-arduino state)
         frames (concat (:frames state) [cframe])]
     (q/background 240)
-    (recurse-frame frames [0 0] [(q/width) (q/height)])
+    (recurse-frame frames [0 0 (q/width) (q/height)] [(q/width) (q/height)])
     (mock/render (:mock state))))
