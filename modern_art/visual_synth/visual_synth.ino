@@ -5,6 +5,7 @@ void setup() {
 }
 
 void loop() {
+  Serial.write(255);
   Serial.write(100);
   Serial.write(0);
   Serial.write(100);

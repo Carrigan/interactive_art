@@ -4,7 +4,7 @@
             [quil.core :as q]))
 
 (q/defsketch modern-art
-  :title "You spin my circle right round"
+  :title "Synthestesia"
   :size [800 800]
   :setup dynamic/setup
   :update dynamic/update-state

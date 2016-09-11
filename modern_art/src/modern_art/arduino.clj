@@ -4,7 +4,10 @@
 (defn on-receive-gen
   [received-atom]
   (fn [character]
-    (swap! received-atom conj character)))
+    (if (= character 255)
+      (reset! received-atom [])
+      (swap! received-atom conj character))))
+
 
 (defn initialize
   [port-name]
@@ -31,7 +34,6 @@
         message       @received-atom]
     (if (>= (count message) 5)
       (do
-        (println (build-state message))
         (reset! received-atom [])
         (assoc state :state (build-state message)))
       state)))
