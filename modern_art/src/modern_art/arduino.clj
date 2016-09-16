@@ -36,10 +36,11 @@
 
 (defn build-state
   [[hue sat bri buttons _]]
+  (println [hue sat bri buttons])
   { :hue hue
     :sat sat
     :bri bri
-    :next-button false
+    :next-button (> (bit-and buttons 1) 0)
   })
 
 (defn update-serial
@@ -48,7 +49,7 @@
         message       @received-atom]
     (if (>= (count message) 5)
       (do
-        (reset! received-atom [])
+        (reset! received-atom (drop 5 message))
         (assoc state :state (build-state message)))
       state)))
 

@@ -7,7 +7,7 @@
   (q/frame-rate 30)
   (q/color-mode :hsb)
   {:frames '()
-   :arduino (arduino/initialize "COM9")})
+   :arduino (arduino/initialize "COM3")})
 
 (defn frame-from-arduino [state]
   [ (get-in state [:arduino :state :hue])
