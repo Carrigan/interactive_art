@@ -1,23 +1,27 @@
 (ns modern-art.arduino
-  (:require [serial-port :as ser]
+  (:require [serial.core :as ser]
             [modern-art.mock :as mock]))
 
 (defn on-receive-gen
   [received-atom]
-  (fn [character]
-    (if (= character 255)
-      (reset! received-atom [])
-      (swap! received-atom conj character))))
+  (fn [stream]
+    (let [character (.read stream)]
+      (if (= character 255)
+        (reset! received-atom [])
+        (swap! received-atom conj character)))))
 
 (defn connect [port-name]
   (try
     (ser/open port-name)
     (catch Exception _ nil)))
 
+(defn disconnect [state]
+  (ser/close! (:port state)))
+
 (defn initialize-port [serial]
   (let [received-atom (atom [])]
-    (ser/on-byte serial (on-receive-gen received-atom))
-    (ser/write-int serial (int 0))
+    (ser/listen! serial (on-receive-gen received-atom))
+    (ser/write serial 0)
     { :is-mock false
       :received-atom received-atom
       :port serial
@@ -36,7 +40,6 @@
 
 (defn build-state
   [[hue sat bri buttons _]]
-  (println [hue sat bri buttons])
   { :hue hue
     :sat sat
     :bri bri
@@ -49,9 +52,9 @@
         message       @received-atom]
     (if (>= (count message) 5)
       (do
-        (reset! received-atom (drop 5 message))
+        (reset! received-atom [])
         (assoc state :state (build-state message)))
-      state)))
+      (assoc-in state [:state :next-button] false))))
 
 (defn mouse-pressed [state event]
   (let [mock-state (:mock state)]
