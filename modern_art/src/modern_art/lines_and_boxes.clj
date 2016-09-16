@@ -1,7 +1,7 @@
 (ns modern-art.lines-and-boxes
   (:require [quil.core :as q]))
 
-(def size 0.13)
+(def size 0.33)
 
 (defn clip-8-bit [value]
   (cond (> value 255) (- value 255)
