@@ -1,7 +1,7 @@
 (ns modern-art.lines-and-boxes
   (:require [quil.core :as q]))
 
-(def size 0.33)
+(def size 0.10)
 
 (defn clip-8-bit [value]
   (cond (> value 255) (- value 255)
@@ -26,14 +26,14 @@
     (q/rect size size size size)
 
     (let [[h s l]   color
-          new-color [(rotate-hue h 106) s (dim l)]
+          new-color [(rotate-hue h 150) s (dim l)]
           start     (* size 2)]
       (apply q/fill new-color)
       (q/rect start size (- (q/width) start) size)
       (q/rect 0 size size size))
 
     (let [[h s l]   color
-          new-color [(rotate-hue h -106) s (dim l)]
+          new-color [(rotate-hue h -150) s (dim l)]
           start     (* size 2)]
       (apply q/fill new-color)
       (q/rect size start size (- (q/height) start))

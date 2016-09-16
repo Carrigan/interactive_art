@@ -1,7 +1,6 @@
 void setup() {
   pinMode(8, INPUT);
   Serial.begin(115200);
-  while(Serial.available() == 0);
 }
 
 int potentiometerReading(int pin) {
@@ -17,6 +16,7 @@ int potentiometerReading(int pin) {
 void loop() {
   static bool was_pressed = false;
   bool pressed = (digitalRead(8) == LOW);
+  static uint8_t cooldown = 0;
   
   // Delimiter
   Serial.write(255);
@@ -28,8 +28,9 @@ void loop() {
 
   // Buttons
   uint8_t buttons = 0;
-  if(!was_pressed && pressed) {
+  if(!was_pressed && pressed && cooldown == 0) {
     buttons = buttons | (1 << 0);
+    cooldown = 20;
   }
 
   Serial.write(buttons);
@@ -37,7 +38,10 @@ void loop() {
   // Dial
   Serial.write(0);
 
-  // Slight delay
+  // Advance button state
+  if(cooldown) cooldown -= 1;
   was_pressed = pressed;
+
+  // Slight Delay
   delay(50);
 }
