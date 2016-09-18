@@ -90,7 +90,7 @@ void draw() {
 
 ---
 
-< Picture of a circle on a screen >
+![](circle.png)
 
 ---
 
