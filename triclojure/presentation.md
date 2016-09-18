@@ -51,7 +51,7 @@
 
 ---
 
-![](conducting.md)
+![](conducting.png)
 
 ???
 
@@ -221,24 +221,31 @@ your image.
 
 # Making Things Talk
 
----
+< Picture of DB9 connector >
 
-## Serial
+???
+
+- Serial is one of the oldest interfaces for computers. It provides an asynchronous data stream
+  in both directions at a hard coded bit rate.
+- 115200bps, 14.4kB/s. Anything more needs ethernet.
+
+---
 
 ## Where your logic lies
 
-- The serial line somewhat like a web API; you define a contract for the two parties to speak over
-  and then build an application around that.
+```
+The serial line is somewhat like a web API; you define a contract for the two parties to speak over
+and then build an application around that.
+```
+
+???
+
+- Perfect for this: no overhead or assumptions about what your packets look like; you can make up
+  everything.
 
 ---
 
-## Serial in Clojure
-
-- Serial receive happens asynchronously and in another thread.
-- Create an atom that receives the data and then parse it into program state during `update`.
-
----
-
+## Simple Example
 
 - If you have some simple events to send either way, you can use a single character to trigger things.
 
@@ -246,7 +253,18 @@ your image.
 
 ---
 
+## Multiple Bytes
 
+- Multiple bytes presents a problem: Framing.
+- Easy, inflexible: 255 delimited
+- Hard, flexible: Length + Payload + Checksum
+
+---
+
+## Serial in Clojure
+
+- Serial receive happens asynchronously and in another thread.
+- Create an atom that receives the data and then parse it into program state during `update`.
 
 ---
 
