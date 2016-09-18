@@ -120,6 +120,7 @@ void draw() {
   then your `draw` function is simply a renderer.
 - Anyone familiar with React, Reagent, Om, etc. may recognize this pattern; your update function is
   essentially your reducer and when it completes, the draw function is essentially your views.s
+- Speaking of these frameworks: this can also compile to clojurescript and be used on the web.
 
 ---
 
@@ -219,6 +220,16 @@ your image.
 
 ---
 
+#... but eventually make it
+
+< Hardware picture >
+
+---
+
+< Schematic >
+
+---
+
 # Making Things Talk
 
 < Picture of DB9 connector >
@@ -256,8 +267,22 @@ and then build an application around that.
 ## Multiple Bytes
 
 - Multiple bytes presents a problem: Framing.
-- Easy, inflexible: 255 delimited
-- Hard, flexible: Length + Payload + Checksum
+- Easy solution: Make `255` a frame delimiter.
+- Flexible solution: Length + Payload + Checksum
+
+---
+
+```cpp
+int potentiometerReading(int pin) {
+  int reading = analogRead(pin);
+  reading = reading >> 2;
+
+  if(reading == 255)
+    return 254;
+
+  return reading;
+}
+```
 
 ---
 
@@ -268,4 +293,134 @@ and then build an application around that.
 
 ---
 
+```clojure
+(defn update-serial
+  [state]
+  (let [received-atom (:received-atom state)
+        message       @received-atom]
+    (if (>= (count message) 5)
+      (do
+        (reset! received-atom [])
+        (assoc state :state (build-state message)))
+      (assoc-in state [:state :next-button] false))))
+```
+
+---
+
+## Demo
+
+---
+
 # Scaling Up
+
+< Fraqture >
+
+???
+
+- Talk about what Fraqture was designed for and what it does.
+
+---
+
+## Hardware
+
+- Teensy 3.2
+- 540 Dotstar LEDs (18m @ 30/m)
+- Computer Power Supply
+
+< Hardware Pic >
+
+???
+
+- Much different challenges: power distribution and updating the LEDs in a decent amount of time.
+- 540 LEDs use 30W of power - cheapest power supply is actually a computer power supply.
+
+---
+
+## LEDs
+
+- LEDs are a long serial string that require 4 bytes each.
+- `(* 540 4) -> 2160 bytes`
+- Hitting 20 FPS would be over 40,000 bytes
+
+---
+
+## Frame Buffer
+
+- Interface for setting individual LEDs or drawing boxes of color.
+
+```clojure
+(paint-window port 0 0 5 9 [20 20 120])
+```
+
+- Once the frame is complete, a refresh command paints the physical LEDs.
+
+```clojure
+(refresh port)
+```
+
+---
+
+## Mock
+
+< Fraqture Mock >
+
+???
+
+- LEDs alone cost nearly $400, a lot of time to build, and we wanted to be able to work on it while
+  it was on display and also allow others to contribute without the
+- Remade the entire interface in Clojure: when the API calls are made, instead of going out over
+  serial, they update an internal frame buffer that is painted.
+
+---
+
+```clojure
+(defn curried-draw [drawing-atom with-mock? serial]
+  (if with-mock?
+    (fn [state]
+      (do ((:draw @drawing-atom) state) (led/draw-mock serial) (attribution-overlay (:attributable state))))
+    (fn [state]
+      (do ((:draw @drawing-atom) state) (attribution-overlay (:attributable state))))))
+
+```
+
+---
+
+## Drawing Cycle
+
+- Added several functions to the setup/draw/update function.
+  - `exit`
+  - `cli`
+  - `acts-on`
+
+???
+
+Allows us to run them individually or to cycle through the pictures.
+
+---
+
+## Interactivity: Twitter
+
+- Bot written in Ruby that pulled down anything our account retweeted.
+- Keep track of which ones were displayed so new ones were instant.
+
+???
+
+- The last thing I want to talk about is how we achieved interactivity behind glass.
+
+---
+
+## Interactivity: Camera
+
+- Used a webcam and a command line app called `imagesnap`.
+- Keep track of which ones were displayed so new ones were instant.
+- After being displayed once, they were copied to an archive.
+
+```clojure
+(defn take-picture [holdoff]
+  (let [now (System/currentTimeMillis)]
+    (shell/sh "imagesnap" "-w" (str holdoff) (str "rasters/once_" now ".jpg"))))
+```
+
+---
+
+## Thank You
