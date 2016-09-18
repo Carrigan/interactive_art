@@ -147,7 +147,81 @@ void loop() {
 
 ---
 
+# Building a Small Project
+
+< picture of project >
+
+???
+
+- How to structure your Quil project so it is hot-reloadable
+- Mocking your hardware before ever touching an Arduino
+- A simple example of a talking to a computer
+
+---
+
+# Hot Reload
+
+- Processing/Quil use something called a `sketch` as an interface to define where and how to draw
+your image.
+- To enable hot reloading, split your draw functions into a separate namespace and use:
+
+```clojure
+(use 'namespace.reloadable-functions :reload)
+```
+
+---
+
+```clojure
+(q/defsketch modern-art
+  :title "Synthestesia"
+  :size [800 800]
+  :setup dynamic/setup
+  :update dynamic/update-state
+  :draw dynamic/draw-state
+  :mouse-pressed dynamic/mouse-pressed
+  :features [:keep-on-top]
+  :middleware [m/fun-mode])
+```
+
+???
+
+- Go to demo.
+
+---
+
+# Mock it 'til you Make It
+
+< Sketch of the dials and button >
+
+???
+
+- So first thing you want to do with a project like this is to define what your user interface
+  will be. In my case, I wanted a couple of dials like an analog synth but to control my drawing.
+- There are two big reasons that you will want to mock your interface before building the Arduino
+  version:
+  1. If you want to work with other people on this, it is safe to assume that not everyone will keep
+     the most recent copy of the hardware.
+  2. Hardware costs money and adds time to development with shipping and building times. It would be
+     nice to see if the interface you designed is really the compelling experience you thought before
+     sinking these costs.
+
+---
+
+![](mock.png)
+
+???
+
+- Dials are just ways to adjust some value between its max and min. A good linear analogue is the
+  slider.
+- Buttons are just a simple event. We can use keypresses or an actual button element that you can
+  click on.
+- Add code where you attempt to connect to serial, and if not found, use the mock instead.
+
+---
+
 # Making Things Talk
+
+---
 
 ## Serial
 
@@ -158,11 +232,21 @@ void loop() {
 
 ---
 
-# Building a Small Project
+## Serial in Clojure
+
+- Serial receive happens asynchronously and in another thread.
+- Create an atom that receives the data and then parse it into program state during `update`.
+
+---
+
 
 - If you have some simple events to send either way, you can use a single character to trigger things.
 
 ![](strip.gif)
+
+---
+
+
 
 ---
 
