@@ -4,7 +4,7 @@
 
 ---
 
-# About Me
+## About Me
 
 ???
 
@@ -15,9 +15,9 @@
 
 ---
 
-# Fraqture
+## Fraqture
 
-< Image >
+![](fraqture.png)
 
 ???
 
@@ -72,7 +72,7 @@
 
 ---
 
-# Processing
+## Processing
 
 - Provides a canvas, drawing primitives, and a two function interface.
 
@@ -94,7 +94,7 @@ void draw() {
 
 ---
 
-# Quil
+## Quil
 
 ```clojure
 (defn setup []
@@ -124,7 +124,7 @@ void draw() {
 
 ---
 
-# Arduino
+## Arduino
 
 - Provides chip setup, a simple analog and digital API, and a two function interface.
 
@@ -144,10 +144,6 @@ void loop() {
 
 ---
 
-< circuit diagram of what that pin is doing >
-
----
-
 # Building a Small Project
 
 < picture of project >
@@ -160,7 +156,7 @@ void loop() {
 
 ---
 
-# Hot Reload
+## Hot Reload
 
 - Processing/Quil use something called a `sketch` as an interface to define where and how to draw
 your image.
@@ -190,7 +186,7 @@ your image.
 
 ---
 
-# Mock it 'til you Make It
+## Mock it 'til you Make It
 
 < Sketch of the dials and button >
 
@@ -220,7 +216,7 @@ your image.
 
 ---
 
-#... but eventually make it
+##... but eventually make it
 
 < Hardware picture >
 
@@ -313,7 +309,7 @@ int potentiometerReading(int pin) {
 
 # Scaling Up
 
-< Fraqture >
+![](storefront.jpg)
 
 ???
 
@@ -327,7 +323,7 @@ int potentiometerReading(int pin) {
 - 540 Dotstar LEDs (18m @ 30/m)
 - Computer Power Supply
 
-< Hardware Pic >
+![](hardware.jpg)
 
 ???
 
@@ -340,7 +336,7 @@ int potentiometerReading(int pin) {
 
 - LEDs are a long serial string that require 4 bytes each.
 - `(* 540 4) -> 2160 bytes`
-- Hitting 20 FPS would be over 40,000 bytes
+- Hitting 20 FPS would be over 40,000 bytes/s
 
 ---
 
@@ -349,7 +345,7 @@ int potentiometerReading(int pin) {
 - Interface for setting individual LEDs or drawing boxes of color.
 
 ```clojure
-(paint-window port 0 0 5 9 [20 20 120])
+(paint-window port x1 y1 x2 y2 [r g b])
 ```
 
 - Once the frame is complete, a refresh command paints the physical LEDs.
@@ -362,7 +358,7 @@ int potentiometerReading(int pin) {
 
 ## Mock
 
-< Fraqture Mock >
+![](fraqturemock.png)
 
 ???
 
@@ -377,10 +373,14 @@ int potentiometerReading(int pin) {
 (defn curried-draw [drawing-atom with-mock? serial]
   (if with-mock?
     (fn [state]
-      (do ((:draw @drawing-atom) state) (led/draw-mock serial) (attribution-overlay (:attributable state))))
+      (do
+        ((:draw @drawing-atom) state)
+        (led/draw-mock serial)
+        (attribution-overlay (:attributable state))))
     (fn [state]
-      (do ((:draw @drawing-atom) state) (attribution-overlay (:attributable state))))))
-
+      (do
+        ((:draw @drawing-atom) state)
+        (attribution-overlay (:attributable state))))))
 ```
 
 ---
@@ -405,7 +405,12 @@ Allows us to run them individually or to cycle through the pictures.
 
 ???
 
+
 - The last thing I want to talk about is how we achieved interactivity behind glass.
+
+---
+
+![](twitter.png)
 
 ---
 
@@ -418,7 +423,8 @@ Allows us to run them individually or to cycle through the pictures.
 ```clojure
 (defn take-picture [holdoff]
   (let [now (System/currentTimeMillis)]
-    (shell/sh "imagesnap" "-w" (str holdoff) (str "rasters/once_" now ".jpg"))))
+    (shell/sh "imagesnap" "-w" (str holdoff)
+      (str "rasters/once_" now ".jpg"))))
 ```
 
 ---
