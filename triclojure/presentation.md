@@ -1,8 +1,10 @@
+class: center, middle
 
 # Making Interactive Art With Quil and Arduino
 ## http://github.com/carrigan/interactive_art
 
 ---
+class: center, middle
 
 ## About Me
 
@@ -14,6 +16,7 @@
   circuits and coding in C for really, really small computers.
 
 ---
+class: full-image
 
 ## Fraqture
 
@@ -29,8 +32,11 @@
 - We'll come back to this later after we learn a bit about the underlying frameworks.
 
 ---
+class: full-image
 
-< Image of a microcontroller >
+## Microcontrollers
+
+![](atmega328.png)
 
 ???
 
@@ -50,6 +56,7 @@
   use C, it was really frustrating to read through 1000 page datasheets just to blink an LED.
 
 ---
+class: full-image
 
 ![](conducting.png)
 
@@ -89,6 +96,7 @@ void draw() {
 ```
 
 ---
+class: small-image
 
 ![](circle.png)
 
@@ -98,7 +106,7 @@ void draw() {
 
 ```clojure
 (defn setup []
-  (q/frame-rate 30))
+  (q/frame-rate 30) 0)
 
 (defn update [x]
   (rem (+ x 1) (q/width)))
@@ -143,6 +151,7 @@ void loop() {
 ```
 
 ---
+class: full-image
 
 # Building a Small Project
 
@@ -167,6 +176,7 @@ your image.
 ```
 
 ---
+## Hot Reload
 
 ```clojure
 (q/defsketch modern-art
@@ -185,6 +195,7 @@ your image.
 - Go to demo.
 
 ---
+class: full-image
 
 ## Mock it 'til you Make It
 
@@ -203,6 +214,7 @@ your image.
      sinking these costs.
 
 ---
+class: full-image
 
 ![](mock.png)
 
@@ -215,20 +227,23 @@ your image.
 - Add code where you attempt to connect to serial, and if not found, use the mock instead.
 
 ---
+class: full-image
 
 ##... but eventually make it
 
 < Hardware picture >
 
 ---
+class: full-image
 
 < Schematic >
 
 ---
+class: small-image
 
 # Making Things Talk
 
-< Picture of DB9 connector >
+![](db9.jpg)
 
 ???
 
@@ -237,12 +252,15 @@ your image.
 - 115200bps, 14.4kB/s. Anything more needs ethernet.
 
 ---
+class: middle
 
 ## Where your logic lies
 
 ```
-The serial line is somewhat like a web API; you define a contract for the two parties to speak over
-and then build an application around that.
+The serial line is somewhat like a web API;
+you define a contract for the two parties to
+speak over and then build an application
+around that.
 ```
 
 ???
@@ -251,6 +269,7 @@ and then build an application around that.
   everything.
 
 ---
+class: small-image
 
 ## Simple Example
 
@@ -267,6 +286,8 @@ and then build an application around that.
 - Flexible solution: Length + Payload + Checksum
 
 ---
+
+## Multiple Bytes
 
 ```cpp
 int potentiometerReading(int pin) {
@@ -288,6 +309,7 @@ int potentiometerReading(int pin) {
 - Create an atom that receives the data and then parse it into program state during `update`.
 
 ---
+## Serial in Clojure
 
 ```clojure
 (defn update-serial
@@ -302,10 +324,12 @@ int potentiometerReading(int pin) {
 ```
 
 ---
+class: center, middle
 
 ## Demo
 
 ---
+class: full-image
 
 # Scaling Up
 
@@ -316,6 +340,7 @@ int potentiometerReading(int pin) {
 - Talk about what Fraqture was designed for and what it does.
 
 ---
+class: small-image
 
 ## Hardware
 
@@ -331,12 +356,14 @@ int potentiometerReading(int pin) {
 - 540 LEDs use 30W of power - cheapest power supply is actually a computer power supply.
 
 ---
-
+class: small-image
 ## LEDs
 
 - LEDs are a long serial string that require 4 bytes each.
 - `(* 540 4) -> 2160 bytes`
 - Hitting 20 FPS would be over 40,000 bytes/s
+
+![](leds.png)
 
 ---
 
@@ -355,6 +382,7 @@ int potentiometerReading(int pin) {
 ```
 
 ---
+class: full-image
 
 ## Mock
 
@@ -368,6 +396,7 @@ int potentiometerReading(int pin) {
   serial, they update an internal frame buffer that is painted.
 
 ---
+## Mock
 
 ```clojure
 (defn curried-draw [drawing-atom with-mock? serial]
@@ -409,6 +438,7 @@ Allows us to run them individually or to cycle through the pictures.
 - The last thing I want to talk about is how we achieved interactivity behind glass.
 
 ---
+class: small-image
 
 ![](twitter.png)
 
@@ -428,5 +458,6 @@ Allows us to run them individually or to cycle through the pictures.
 ```
 
 ---
+class: middle, center
 
-## Thank You
+# Thank You
