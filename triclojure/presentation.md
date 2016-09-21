@@ -199,7 +199,7 @@ class: full-image
 
 ## Mock it 'til you Make It
 
-< Sketch of the dials and button >
+![](idea.jpg)
 
 ???
 
@@ -231,12 +231,22 @@ class: full-image
 
 ##... but eventually make it
 
-< Hardware picture >
+![](schematic.jpg)
 
 ---
 class: full-image
 
-< Schematic >
+![](prototype.jpg)
+
+---
+class: full-image
+
+![](enclosure.jpg)
+
+---
+class: full-image
+
+![](enclosed.jpg)
 
 ---
 class: small-image

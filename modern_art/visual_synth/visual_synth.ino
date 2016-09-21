@@ -22,9 +22,9 @@ void loop() {
   Serial.write(255);
 
   // HSL
-  Serial.write(potentiometerReading(0));
-  Serial.write(potentiometerReading(1));
-  Serial.write(potentiometerReading(2));
+  Serial.write(potentiometerReading(3));
+  Serial.write(potentiometerReading(4));
+  Serial.write(potentiometerReading(5));
 
   // Buttons
   uint8_t buttons = 0;

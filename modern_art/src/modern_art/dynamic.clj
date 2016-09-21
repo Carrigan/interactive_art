@@ -7,7 +7,7 @@
   (q/frame-rate 30)
   (q/color-mode :hsb)
   {:frames '()
-   :arduino (arduino/initialize "/dev/tty.usbserial-A600afAk")})
+   :arduino (arduino/initialize "/dev/tty.usbserial-A105C5F0")})
 
 (defn frame-from-arduino [state]
   [ (get-in state [:arduino :state :hue])
