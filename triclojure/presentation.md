@@ -43,17 +43,14 @@ class: full-image
 - We're going to be talking about these tiny computers a lot so I'll take a second to talk about them.
   They are called microcontrollers and they are made to run programs that read electrical signals
   from sensors and do something with them, like turn on LEDs, control motors, or talk to other computers.
-- The one pictured here is an ATMega328 - the original chip used for Arduinos. It is an 8 bit processor,
-  which means that its math operations can only run on 8 bit numbers. If you need to multiple two
-  32 bit integers, it can take several hundred clock cycles to do so. Forget float math at the door.
+- Very low power chip.
+- It is an 8 bit processor
 - This chip has only 32kB of program storage and 2kB of RAM. This is not enough for an operating
   system, so what you typically do is use your computer to compile a program for it, and then you
   load that program on the chip and when it boots up, that program is the only thing it knows how
   to do.
-- If this sounds intimidating, it used to be and it still is in a lot of cases. When I was in college
-  we were taught to use Assembly to program them and you had to write hundreds of lines of code
-  just to initialize the chip properly and then many more to write your program. Even if we got to
-  use C, it was really frustrating to read through 1000 page datasheets just to blink an LED.
+- This is fine: microwave doesn't need to be able to run NPM.
+- It was really frustrating to read through 1000 page datasheets just to blink an LED
 
 ---
 class: full-image
@@ -62,11 +59,8 @@ class: full-image
 
 ???
 
-- This all changed though when I took a class outside the engineering school where we had a group
-  of students from 5 different schools that were tasked with making a robot that could conduct a
-  10 piece orchestra. The professors had encouraged use to use two tools for this: Arduino and
-  Processing. I didn't know it at the time but learning these tools would change the course of my
-  career.
+- Conducting robots class: students from 5 different schools making a robot for a 10 piece orchestra.
+- The professors had encouraged use to use two tools for this: Arduino and Processing.
 - Using these tools, we were able to build a robot in one semester that would take a MIDI file as
   input and use it to conduct any song to a 10 piece orchestra. Our robot had motors controlling one
   arm to conduct in the traditional manor, motors controlling the other arm and wrist to show what
@@ -119,13 +113,11 @@ class: small-image
 
 - Fast forward many years and I met TriClojure's own Michael Stalker and we did a SICP study group
   where I learned how awesome lisps can be.
-- It had been a while since I had played with Processing so I decided to see if there was a Clojure
-  binding for Processing and found Quil. I made a small drawing for the first time and opened it
-  in a REPL and was hooked; using Clojure you could actually hot reload the drawing code and turn
-  circles to squares and move things around without restarting anything.
-- Since data is immutable in Clojure, Quil has a 3 function interface where instead of modifying and
-  drawing things in your draw loop, you have an `update` function where you modify your state and
-  then your `draw` function is simply a renderer.
+- Looked for Clojure binding for Processing and found Quil.
+- Sam Aaron (Overtone, Quil, SonicPi)
+- I made a small drawing for the first time and opened it in a REPL and was hooked
+- Hot Reloading - change everything
+- 3 function interface differences
 - Anyone familiar with React, Reagent, Om, etc. may recognize this pattern; your update function is
   essentially your reducer and when it completes, the draw function is essentially your views.s
 - Speaking of these frameworks: this can also compile to clojurescript and be used on the web.
@@ -151,11 +143,11 @@ void loop() {
 ```
 
 ---
-class: full-image
+class: tiny-image
 
 # Building a Small Project
 
-< picture of project >
+![](visualsynth.jpg)
 
 ???
 
