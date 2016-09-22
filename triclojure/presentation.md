@@ -2,6 +2,7 @@ class: center, middle
 
 # Making Interactive Art With Quil and Arduino
 ## http://github.com/carrigan/interactive_art
+### @bcarrigan
 
 ---
 class: center, middle
@@ -34,42 +35,22 @@ class: full-image
 ---
 class: full-image
 
-## Microcontrollers
-
-![](atmega328.png)
-
-???
-
-- We're going to be talking about these tiny computers a lot so I'll take a second to talk about them.
-  They are called microcontrollers and they are made to run programs that read electrical signals
-  from sensors and do something with them, like turn on LEDs, control motors, or talk to other computers.
-- Very low power chip.
-- It is an 8 bit processor
-- This chip has only 32kB of program storage and 2kB of RAM. This is not enough for an operating
-  system, so what you typically do is use your computer to compile a program for it, and then you
-  load that program on the chip and when it boots up, that program is the only thing it knows how
-  to do.
-- This is fine: microwave doesn't need to be able to run NPM.
-- It was really frustrating to read through 1000 page datasheets just to blink an LED
-
----
-class: full-image
-
 ![](conducting.png)
 
 ???
 
+- Story starts in college
 - Conducting robots class: students from 5 different schools making a robot for a 10 piece orchestra.
 - The professors had encouraged use to use two tools for this: Arduino and Processing.
-- Using these tools, we were able to build a robot in one semester that would take a MIDI file as
-  input and use it to conduct any song to a 10 piece orchestra. Our robot had motors controlling one
-  arm to conduct in the traditional manor, motors controlling the other arm and wrist to show what
-  intensity the song was at, and LEDs that were used for letting instruments know that they are
-  coming up as well as to show the 4/4 beat visually.
-- For the rest of this talk, we'll be going over how these frameworks help making interactive digital
-  art, talking about how to scale from a file drawing to a having hardware and software working
-  together to make some awesome things, and finish with a slew of links for anyone interested in
-  building some of this stuff.
+- Using these tools, we were able to build a robot in one semester
+  - Use any MIDI file as input
+  - Conduct a 10 piece orchestra
+  - Arms + Wrist -> Intensity
+  - LEDs -> Queueing instruments + tempo
+- For the rest of this talk, we'll:
+  - Talk about these frameworks
+  - Talk about building a project from a drawing to completion
+  - Finish with tips for larger projects
 
 ---
 
@@ -88,6 +69,12 @@ void draw() {
   x = (x + 1) % width();
 }
 ```
+
+???
+
+- Sets up a graphical environment
+- Abstractions for OpenGL to make it easier
+- Push and Pop
 
 ---
 class: small-image
@@ -123,6 +110,24 @@ class: small-image
 - Speaking of these frameworks: this can also compile to clojurescript and be used on the web.
 
 ---
+class: full-image
+
+## Microcontrollers
+
+![](atmega328.png)
+
+???
+
+- Processing -> Graphics, Arduino -> Hardware
+- It was really frustrating to read through 1000 page datasheets just to blink an LED
+- Purpose: write programs that use signals from sensors to do something.
+- Couple interesting differences from computers
+  - Very low power chip.
+  - It is an 8 bit processor
+  - This chip has only 32kB of program storage and 2kB of RAM. No OS
+  - This is fine: microwave doesn't need to be able to run NPM.
+
+---
 
 ## Arduino
 
@@ -143,17 +148,30 @@ void loop() {
 ```
 
 ---
-class: tiny-image
+class: center, middle
 
 # Building a Small Project
 
-![](visualsynth.jpg)
 
 ???
 
 - How to structure your Quil project so it is hot-reloadable
 - Mocking your hardware before ever touching an Arduino
 - A simple example of a talking to a computer
+
+---
+class: full-image
+
+## Modern Art Generator
+
+![](modern_art.png)
+
+???
+
+What Is It
+- Slowly reading Godel, Escher, Bach, which inspired me to make a piece of recursive art
+- Drawing would draw itself with a window, then pass that windowed view to the next drawing.
+- Pictures of a family holding a frame with the picture of the family in it.
 
 ---
 
@@ -185,6 +203,23 @@ your image.
 ???
 
 - Go to demo.
+
+---
+
+## Code The MVP
+
+```clojure
+(defn recurse-frame [colors [cx cy mx my] [x y]]
+  (when-not (empty? colors)
+    (let [size-x (- mx cx)
+          size-y (- my cy)]
+      (q/push-matrix)
+      (q/translate cx cy)
+      (q/scale (/ size-x x) (/ size-y y))
+      (let [next-location (-> colors (first) (frame/render))]
+        (recurse-frame (rest colors) next-location [x y])
+        (q/pop-matrix)))))
+```
 
 ---
 class: full-image
@@ -225,20 +260,17 @@ class: full-image
 
 ![](schematic.jpg)
 
+???
+
+- Define
+  - Potentiometer - limited range, analog signal between all on or all off
+  - Button - binary on or off
+  - Encoder - like a potentiometer, but unlimited range. Sends events instead of a signal.
+
 ---
-class: full-image
+class: full-image, middle
 
 ![](prototype.jpg)
-
----
-class: full-image
-
-![](enclosure.jpg)
-
----
-class: full-image
-
-![](enclosed.jpg)
 
 ---
 class: small-image
@@ -256,7 +288,7 @@ class: small-image
 ---
 class: middle
 
-## Where your logic lies
+## Making Things Talk
 
 ```
 The serial line is somewhat like a web API;
@@ -280,12 +312,15 @@ class: small-image
 ![](strip.gif)
 
 ---
+class: full-image
 
 ## Multiple Bytes
 
 - Multiple bytes presents a problem: Framing.
 - Easy solution: Make `255` a frame delimiter.
 - Flexible solution: Length + Payload + Checksum
+
+![](packet.png)
 
 ---
 
@@ -304,11 +339,23 @@ int potentiometerReading(int pin) {
 ```
 
 ---
-
 ## Serial in Clojure
 
+```clojure
+(defn on-receive-gen
+  [received-atom]
+  (fn [stream]
+    (let [character (.read stream)]
+      (if (= character 255)
+        (reset! received-atom [])
+        (swap! received-atom conj character)))))
+```
+
+???
+
+- A function that is called on every receive.
 - Serial receive happens asynchronously and in another thread.
-- Create an atom that receives the data and then parse it into program state during `update`.
+- Create an atom that receives the data and stuffs a buffer in it
 
 ---
 ## Serial in Clojure
@@ -325,6 +372,30 @@ int potentiometerReading(int pin) {
       (assoc-in state [:state :next-button] false))))
 ```
 
+???
+
+- And then in your update function, you can parse that buffer into a state.
+
+---
+
+class: full-image, middle
+
+![](enclosure.jpg)
+
+???
+
+Scrap Exchange - $3 worth of wood
+
+---
+class: full-image, middle
+
+![](enclosed.jpg)
+
+---
+class: tiny-image, middle
+
+![](visualsynth.jpg)
+
 ---
 class: center, middle
 
@@ -339,7 +410,17 @@ class: full-image
 
 ???
 
-- Talk about what Fraqture was designed for and what it does.
+---
+
+class: small-image, middle
+
+![](fraq_concept.png)
+
+---
+
+class: full-image, middle
+
+![](fraq_prototypes.png)
 
 ---
 class: small-image
@@ -428,14 +509,16 @@ class: full-image
 Allows us to run them individually or to cycle through the pictures.
 
 ---
+class: tiny-image
 
 ## Interactivity: Twitter
 
 - Bot written in Ruby that pulled down anything our account retweeted.
 - Keep track of which ones were displayed so new ones were instant.
 
-???
+![](fraq_twitter.png)
 
+???
 
 - The last thing I want to talk about is how we achieved interactivity behind glass.
 
@@ -460,6 +543,38 @@ class: small-image
 ```
 
 ---
+class: full-image, middle
+
+![](fraq_reactions.png)
+
+---
+
+## Conclusion
+
+- Making art is fun and rewarding.
+- Open source tools simplify getting a canvas or hardware project up and running.
+- Mocks help test your theories before building anything.
+- Hardware allows for all sorts of interfaces.
+
+---
 class: middle, center
 
 # Thank You
+## http://github.com/carrigan/interactive_art
+### @bcarrigan
+
+???
+
+- Again, this is all online at the link here
+- Stick around
+  - Talk about individual algorithms Fraqture uses
+  - Open a REPL and play with 540 LEDs
+
+---
+
+# Resources
+
+- [Quil API](http://quil.info/api)
+- [Arduino](https://www.arduino.cc/)
+- [Sparkfun](https://www.sparkfun.com/)
+- [Adafruit](https://www.adafruit.com/)
