@@ -19,4 +19,4 @@
         y (* 150 (q/sin angle))]
     (q/with-translation [(/ (q/width) 2)
                          (/ (q/height) 2)]
-      (q/ellipse x y 100 100))))
+      (q/rect x y 100 100))))

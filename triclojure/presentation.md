@@ -174,6 +174,11 @@ What Is It
 - Pictures of a family holding a frame with the picture of the family in it.
 
 ---
+class: small-image
+
+![](inception.jpg)
+
+---
 
 ## Hot Reload
 
@@ -266,6 +271,7 @@ class: full-image
   - Potentiometer - limited range, analog signal between all on or all off
   - Button - binary on or off
   - Encoder - like a potentiometer, but unlimited range. Sends events instead of a signal.
+  - Think of a car radio
 
 ---
 class: full-image, middle
@@ -410,17 +416,30 @@ class: full-image
 
 ???
 
+- Storefront Project
+- Saw an awesome way to bridge the communities
+- Labs time
+
 ---
 
 class: small-image, middle
 
 ![](fraq_concept.png)
 
+???
+
+- Loose associations
+- Glitch art
+
 ---
 
 class: full-image, middle
 
 ![](fraq_prototypes.png)
+
+???
+
+All kinds of ideas - cubicle story.
 
 ---
 class: small-image
