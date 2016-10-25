@@ -1,4 +1,6 @@
-class: center, middle
+class: center, bottom, first-slide
+background-image: url(leds.png)
+
 
 # Creating Interactive Art with Open Source
 ## http://github.com/carrigan/interactive_art
@@ -47,20 +49,50 @@ class: full-image
   - LEDs -> Queueing instruments + tempo
 
 - The professors had encouraged us to use fantastic open source tools for this: Arduino and Processing.
-- These tools changed my perception about what good software and software environments look like,
+- These tools changed my perception about what good software environments and interfaces look like,
   and showed how a community could build something that allows makers to immediately jump into
   the high value parts of what they are looking to build.
 
 - For the rest of this talk, we'll:
   - Start with a brief overview of what frameworks are available and how they work.
-  - Talk about building a small project from a drawing to completion
+  - Talk about building a small project from concept to completion
   - Finish with tips for larger projects
+
+---
+class: big-points
+
+## Stateful Animation
+
+- Setup: Create a function that will be called once when the program starts, initializing state.
+- Loop: Create a function that will be called X times per second, outputting something based on state.
+
+???
+
+
+- There are tons of ways to think about animation, but all of the frameworks we'll be working with
+  follow a simple pattern; setup and loop.
+- The way to reason about that is as follows
+- Phrase this ambiguously since for hardware we aren't drawing so much as manipulating LEDs, motors,
+  etc
+
+---
+class: small-image
+
+![](circle.png)
+
+???
+
+- So for a simple example, lets talk about a circle moving across the screen right, then looping
+  around.
+- In your setup, you would initialize where the circle starts, set your frame rate.
+- Then in your draw function, you could update the state of your circle to be a bit farther right
+- Finally, you could draw the circle to the screen.
 
 ---
 
 ## Processing
 
-- Provides a canvas, drawing primitives, and a two function interface.
+- Java based animation program with its own interface.
 
 ```java
 void setup() {
@@ -76,22 +108,38 @@ void draw() {
 
 ???
 
+- Runs on top of Java, has a neat little interface so you never need to use the command line.
 - Sets up a desktop canvas app and lets you draw on that canvas.
 - Abstractions for drawing shapes, text, etc.
 - Simple framework, but a very powerful way to think about animation
 - Latest version includes sound
 
 ---
-class: small-image
-
-![](circle.png)
-
----
 
 ## p5.js
 
 - Processing for Javascript
-- Also has an audio library
+
+```javascript
+var x;
+function setup() {
+  x = 0;
+}
+
+function draw() {
+  x = x + 1;
+  if (x > width()) {
+    x = 0;
+  }
+
+  circle(x, height() / 2, 50, 50);
+}
+```
+
+???
+
+- p5 has the same interface and most of the same functions as Processing, but runs on Javascript.
+- Low barrier of entry for JS developers, and allows it to be embedded in pages easily.
 
 ---
 
@@ -104,6 +152,8 @@ Remove the comment to make this playable.
 ---
 
 ## Quil
+
+- Clojure binding to Processing
 
 ```clojure
 (defn setup []
@@ -118,32 +168,44 @@ Remove the comment to make this playable.
 
 ???
 
-- Looked for Clojure binding for Processing and found Quil.
+- Years later I became really interested in Clojure, and started looking for Clojure binding for
+  Processing
 - Sam Aaron (Overtone, Quil, SonicPi)
-- Best of all worlds: can be compiled to clojurescript or coupled with Overtone for music
-- Clojure allows hot reloading, so you can also modify your code while the program is running
-- 3 function interface differences
-- Anyone familiar with React, Reagent, Om, etc. may recognize this pattern; your update function is
-  essentially your reducer and when it completes, the draw function is essentially your views.s
-- Speaking of these frameworks: this can also compile to clojurescript and be used on the web.
+- Bret Victor's talk, "Inventing on Principle" - https://www.youtube.com/watch?v=PUv66718DII
+- Best of all worlds:
+  - Coupled with Overtone for music
+  - Compiles to Clojurescript
+
+
+---
+class: center, middle
+
+## Capabilities Grid
+
+|            | Hardware | Keyboard | Embeddable | Sound | REPL |
+|------------|----------|----------|------------|-------|------|
+| p5         | N        | Y        | Y          | Y     | N    |
+| Processing | Y        | Y        | *          | Y     | N    |
+| Quil       | Y        | Y        | Y          | *     | Y    |
 
 ---
 class: full-image
 
 ## Microcontrollers
 
-![](atmega328.png)
+![](arduino.jpg)
 
 ???
 
 - Processing -> Graphics, Arduino -> Hardware
-- It was really frustrating to read through 1000 page datasheets just to blink an LED
 - Purpose: write programs that use signals from sensors to do something.
-- Couple interesting differences from computers
-  - Very low power chip.
-  - It is an 8 bit processor
-  - This chip has only 32kB of program storage and 2kB of RAM. No OS
-  - This is fine: microwave doesn't need to be able to run NPM.
+- It was really frustrating to read through 1000 page datasheets just to blink an LED
+- Why not use a raspberry pi or computer?
+  - Very low power chip - can be battery powered.
+  - Simple - no OS, very low resources; you just write a loop that runs forever and thats your
+    program.
+  - These chips will not be running anything more than Rust, C, C++ but that is fine: your microwave
+    doesn't need to be able to run NPM.
 
 ---
 
@@ -164,16 +226,6 @@ void loop() {
   delay(500);
 }
 ```
-
----
-
-Table of pros/cons
-
-            Hardware? Mouse/Key? Embed? Sound? REPL?
-Processing: Y         Y          *      Y      N
-Quil:       Y         Y          Y      *      Y
-P5:         N         Y          Y      Y      N
-
 ---
 class: center, middle
 
@@ -186,6 +238,20 @@ class: center, middle
 - A simple example of a talking to a computer
 
 ---
+class: full-image, middle, center
+
+![](modern.jpg)
+
+Photo: https://www.youtube.com/
+
+???
+
+What Is It
+- Slowly reading Godel, Escher, Bach, which inspired me to make a piece of recursive art
+- Drawing would draw itself with a window, then pass that windowed view to the next drawing.
+- Anyone who has watched Modern Family will know the concept from their intro.
+
+---
 class: full-image
 
 ## Modern Art Generator
@@ -194,15 +260,7 @@ class: full-image
 
 ???
 
-What Is It
-- Slowly reading Godel, Escher, Bach, which inspired me to make a piece of recursive art
-- Drawing would draw itself with a window, then pass that windowed view to the next drawing.
-- Pictures of a family holding a frame with the picture of the family in it.
-
----
-class: small-image
-
-![](inception.jpg)
+- Here are some early sketches
 
 ---
 
@@ -218,10 +276,10 @@ your image.
 
 ???
 
-- Bret Victor's talk, "Inventing on Principle" - https://www.youtube.com/watch?v=PUv66718DII
 - Go to demo.
 
 ---
+class: full-image
 
 ## Mock it 'til you Make It
 
@@ -231,6 +289,8 @@ your image.
 
 - So first thing you want to do with a project like this is to define what your user interface
   will be. In my case, I wanted a couple of dials like an analog synth but to control my drawing.
+- Color has a range; typically we break it into RGB or HSL and then range those by 0-255.
+- Want an event to allow us to move into the next layer; the perfect event is a button press.
 - There are two big reasons that you will want to mock your interface before building the Arduino
   version:
   1. If you want to work with other people on this, it is safe to assume that not everyone will keep
@@ -264,7 +324,7 @@ class: full-image
 - Define
   - Potentiometer - limited range, analog signal between all on or all off
   - Button - binary on or off
-  - Encoder - like a potentiometer, but unlimited range. Sends events instead of a signal.
+  - Rotary Encoder - like a potentiometer, but unlimited range. Sends events instead of a signal.
   - Think of a car radio
 
 ---
@@ -279,26 +339,14 @@ class: small-image
 
 ![](db9.jpg)
 
+Photo: https://www.wikipedia.org/
+
 ???
 
 - Serial is one of the oldest interfaces for computers. It provides an asynchronous data stream
   in both directions at a hard coded bit rate.
 - 115200bps, 14.4kB/s. Anything more needs ethernet.
-
----
-class: middle
-
-## Making Things Talk
-
-```
-The serial line is somewhat like a web API;
-you define a contract for the two parties to
-speak over and then build an application
-around that.
-```
-
-???
-
+- Not packetized; every character triggers a receive event.
 - Perfect for this: no overhead or assumptions about what your packets look like; you can make up
   everything.
 
@@ -307,9 +355,13 @@ class: small-image
 
 ## Simple Example
 
-- If you have some simple events to send either way, you can use a single character to trigger things.
+- If you message can fit in one character, use a single character to trigger things.
 
 ![](strip.gif)
+
+???
+
+- Twitter on steroids
 
 ---
 class: full-image
@@ -318,9 +370,15 @@ class: full-image
 
 - Multiple bytes presents a problem: Framing.
 - Easy solution: Make `255` a frame delimiter.
-- Flexible solution: Length + Payload + Checksum
 
 ![](packet.png)
+
+???
+
+- Think about it this way: imagine a person who is measuring a bunch of things and just saying
+  the numbers out loud in a certain order: 5 31 19 106   5 31 19 106
+- If you enter the room in the middle of one of these, you could hear 19 106 5 31  19 106 5 31
+- What we need is a PERIOD - something to say when one message is finished and another one starting
 
 ---
 
@@ -329,7 +387,7 @@ class: full-image
 ```cpp
 int potentiometerReading(int pin) {
   int reading = analogRead(pin);
-  reading = reading >> 2;
+  reading = reading / 4;
 
   if(reading == 255)
     return 254;
@@ -339,41 +397,19 @@ int potentiometerReading(int pin) {
 ```
 
 ---
+class: center, middle, small-image
+
 ## Serial in Clojure
 
-```clojure
-(defn on-receive-gen
-  [received-atom]
-  (fn [stream]
-    (let [character (.read stream)]
-      (if (= character 255)
-        (reset! received-atom [])
-        (swap! received-atom conj character)))))
-```
+![](queue.png)
 
 ???
 
-- A function that is called on every receive.
-- Serial receive happens asynchronously and in another thread.
-- Create an atom that receives the data and stuffs a buffer in it
-
----
-## Serial in Clojure
-
-```clojure
-(defn update-serial
-  [state]
-  (let [received-atom (:received-atom state)
-        message       @received-atom]
-    (if (>= (count message) 5)
-      (do
-        (reset! received-atom [])
-        (assoc state :state (build-state message)))
-      (assoc-in state [:state :next-button] false))))
-```
-
-???
-
+- I think that the code for the Clojure side is a little verbose for this talk, but you can go to
+  the repo to check it out.
+- The important thing that I will note is that serial ports are handled in another thread, so the
+  basic jist is to open up a serial port in a thread, and have it pump data into a queue of some
+  sort to be parsed during the update function.
 - And then in your update function, you can parse that buffer into a state.
 
 ---
@@ -412,7 +448,6 @@ class: full-image
 
 - Storefront Project
 - Saw an awesome way to bridge the communities
-- Labs time
 
 ---
 
@@ -423,7 +458,8 @@ class: small-image, middle
 ???
 
 - Loose associations
-- Glitch art
+  - Glitch art
+  - Digital Billboards
 
 ---
 
@@ -433,7 +469,9 @@ class: full-image, middle
 
 ???
 
-All kinds of ideas - cubicle story.
+- What would the installation look like?
+  - Cubicle story.
+  - High fidelity screen with a low fidelity extension to the canvas
 
 ---
 class: small-image
@@ -442,7 +480,6 @@ class: small-image
 
 - Teensy 3.2
 - 540 Dotstar LEDs (18m @ 30/m)
-- Computer Power Supply
 
 ![](hardware.jpg)
 
@@ -456,10 +493,13 @@ class: small-image
 ## LEDs
 
 - LEDs are a long serial string that require 4 bytes each.
-- `(* 540 4) -> 2160 bytes`
 - Hitting 20 FPS would be over 40,000 bytes/s
 
 ![](leds.png)
+
+???
+
+- `(* 540 4) -> 2160 bytes`
 
 ---
 
@@ -490,23 +530,7 @@ class: full-image
   it was on display and also allow others to contribute without the
 - Remade the entire interface in Clojure: when the API calls are made, instead of going out over
   serial, they update an internal frame buffer that is painted.
-
----
-## Mock
-
-```clojure
-(defn curried-draw [drawing-atom with-mock? serial]
-  (if with-mock?
-    (fn [state]
-      (do
-        ((:draw @drawing-atom) state)
-        (led/draw-mock serial)
-        (attribution-overlay (:attributable state))))
-    (fn [state]
-      (do
-        ((:draw @drawing-atom) state)
-        (attribution-overlay (:attributable state))))))
-```
+- When you run it you can just include --mock and it will draw the mock on top of everything else.
 
 ---
 
@@ -536,11 +560,6 @@ class: tiny-image
 - The last thing I want to talk about is how we achieved interactivity behind glass.
 
 ---
-class: small-image
-
-![](twitter.png)
-
----
 
 ## Interactivity: Camera
 
@@ -555,6 +574,10 @@ class: small-image
       (str "rasters/once_" now ".jpg"))))
 ```
 
+???
+
+- Don't reinvent the wheel! Use off the shelf products if you can.
+
 ---
 class: full-image, middle
 
@@ -564,10 +587,10 @@ class: full-image, middle
 
 ## Conclusion
 
-- Making art is fun and rewarding.
 - Open source tools simplify getting a canvas or hardware project up and running.
 - Mocks help test your theories before building anything.
 - Hardware allows for all sorts of interfaces.
+- Making art is fun and rewarding.
 
 ---
 class: middle, center
@@ -579,9 +602,6 @@ class: middle, center
 ???
 
 - Again, this is all online at the link here
-- Stick around
-  - Talk about individual algorithms Fraqture uses
-  - Open a REPL and play with 540 LEDs
 
 ---
 
