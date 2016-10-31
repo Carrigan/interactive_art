@@ -6,6 +6,12 @@ background-image: url(leds.png)
 ## http://github.com/carrigan/interactive_art
 ### @bcarrigan
 
+???
+
+- Presentation and all code on this site.
+- My account is not the hottest one on Twitter, but it is a great way to reach me if you have any
+  questions after this presentation when you are out making some awesome interactive art.
+
 ---
 class: center, middle, small-image
 
@@ -41,20 +47,18 @@ class: full-image
 
 ???
 
-- Conducting robots class: students from 5 different schools making a robot for a 10 piece orchestra.
-- Using these tools, we were able to build a robot in one semester
-  - Use any MIDI file as input
-  - Conduct a 10 piece orchestra
-  - Arms + Wrist -> Intensity
-  - LEDs -> Queueing instruments + tempo
+- It wasn't until my Junior year that I got to use something other than assembly in a class called
+  conducting robots.
+- Professors recommended two frameworks: Processing and Arduino.
 
-- The professors had encouraged us to use fantastic open source tools for this: Arduino and Processing.
 - These tools changed my perception about what good software environments and interfaces look like,
   and showed how a community could build something that allows makers to immediately jump into
   the high value parts of what they are looking to build.
 
+- Describe what the robot did.
+
 - For the rest of this talk, we'll:
-  - Start with a brief overview of what frameworks are available and how they work.
+  - Start with a brief overview of Processing, Arduino, and some others I've used since then
   - Talk about building a small project from concept to completion
   - Finish with tips for larger projects
 
@@ -68,12 +72,15 @@ class: big-points
 
 ???
 
-
 - There are tons of ways to think about animation, but all of the frameworks we'll be working with
   follow a simple pattern; setup and loop.
-- The way to reason about that is as follows
-- Phrase this ambiguously since for hardware we aren't drawing so much as manipulating LEDs, motors,
-  etc
+- The way that these libraries have you think is to have a global state and then have that state
+  altered over and over again.
+- If you wanted to animate this room right now, you might have the position of the thousands of
+  audience members, and an image of my current slide, and then during your loop you would update
+  them and then draw them.
+- Phrase 'outputting something' ambiguously since for hardware we aren't drawing so much as
+  manipulating LEDs, motors, etc
 
 ---
 class: small-image
@@ -92,7 +99,7 @@ class: small-image
 
 ## Processing
 
-- Java based animation program with its own interface.
+- Java based animation program with a built-in IDE.
 
 ```java
 void setup() {
@@ -143,7 +150,7 @@ function draw() {
 
 ---
 
-# name: p5demo
+name: p5demo
 
 ???
 
@@ -168,14 +175,15 @@ Remove the comment to make this playable.
 
 ???
 
-- Years later I became really interested in Clojure, and started looking for Clojure binding for
-  Processing
+- Years later I became really interested in Clojure, a lisp that runs on top
+  of Java, and started looking for Clojure binding for Processing
 - Sam Aaron (Overtone, Quil, SonicPi)
+- One of the key benefits: hot reloading
 - Bret Victor's talk, "Inventing on Principle" - https://www.youtube.com/watch?v=PUv66718DII
+  - "Creators need an immediate connection to what they create"
 - Best of all worlds:
   - Coupled with Overtone for music
   - Compiles to Clojurescript
-
 
 ---
 class: center, middle
@@ -198,8 +206,9 @@ class: full-image
 ???
 
 - Processing -> Graphics, Arduino -> Hardware
-- Purpose: write programs that use signals from sensors to do something.
-- It was really frustrating to read through 1000 page datasheets just to blink an LED
+- Purpose: write programs that use signals from sensors, switches, buttons, bananas, or whatever,
+  and use them to do something.
+- Arduino lets you skip the 1000 page datasheets just to blink an LED
 - Why not use a raspberry pi or computer?
   - Very low power chip - can be battery powered.
   - Simple - no OS, very low resources; you just write a loop that runs forever and thats your

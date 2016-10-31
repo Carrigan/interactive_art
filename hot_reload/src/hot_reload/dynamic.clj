@@ -8,6 +8,7 @@
    :angle 0})
 
 (defn update-state [state]
+  (q/color-mode :hsb)
   {:color (mod (+ (:color state) 0.7) 255)
    :angle (+ (:angle state) 0.1)})
 
