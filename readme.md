@@ -8,7 +8,7 @@ talks go through the frameworks available for building interactive art, walk
 through a small project, and then talk about how to scale up to something larger
 like [Fraqture](http://www.fraqture.com).
 
-![](ato2016/visualsynth.png)
+![](ato2016/visualsynth.jpg)
 
 ## How to View
 
